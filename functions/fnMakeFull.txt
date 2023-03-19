@@ -1,0 +1,31 @@
+CREATE OR REPLACE FUNCTION fnMakeFull(firstName varchar, lastName varchar)
+RETURNS varchar
+AS
+$$
+BEGIN
+	IF firstName is null and lastName is null THEN
+		return null;
+	ELSIF firstName is null and lastName is not null THEN
+		return lastName;
+	ELSIF firstName is not null and lastName is null THEN
+		return firstName;
+	ELSE
+		return concat(firstName||' '||lastName;
+	END IF;
+	RETURN SUBSTRING($1,$2,$3);
+END;
+$$
+language plpgsql;
+
+
+CREATE TABLE IF NOT EXISTS movies
+(
+	movie_id integer NOT NULL,
+	movie_name character varying(60) COLLATE pg_catalog."default" NOT NULL,
+	year_released integer NOT NULL,
+	genres character varying[] COLLATE pg_catalog."default" NOT NULL,
+	CONSTRAINT mvoies_pkey PRIMARY KEY (movie_id)
+);
+
+
+

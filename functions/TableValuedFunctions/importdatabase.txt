@@ -1,0 +1,16 @@
+--How to load the PostgreSQL sample database into the PostgreSQL database server. 
+
+First Create Database from psql tool or PGADMIN4
+postgres=# CREATE DATABASE dvdrental;
+CREATE DATABASE
+
+In command Prompt
+Step 1: Navigate the bin folder of PostgreSQL Installation
+cd C:\Program Files\PostgreSQL\14\bin
+
+Step 2: Use pg_restore tool to load data into dvdrental database
+C:\Program Files\PostgreSQL\14\bin>pg_restore -U postgres -d dvdrental -p 5433 C:\dvdrental.tar
+
+Sample Database:
+Sample database can be found in link below download the tar file and save to import.
+https://www.postgresqltutorial.com/postgresql-getting-started/postgresql-sample-database/
