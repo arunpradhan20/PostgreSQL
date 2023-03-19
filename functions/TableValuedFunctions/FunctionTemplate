@@ -1,0 +1,12 @@
+------Function Template-------
+
+CREATE OR REPLACE FUNCTION Function_Name(fieldName datatype)
+RETURNS <return_datatype>
+AS
+$$
+BEGIN
+	<type in function body here>
+	RETURN SUBSTRING($1,$2,$3);
+END;
+$$
+language plpgsql;
