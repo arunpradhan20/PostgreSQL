@@ -1,0 +1,25 @@
+CREATE OR REPLACE PROCEDURE PROC_TEST1()
+AS
+$$
+DECLARE
+	rec_film record;  				
+  
+	cur_films cursor for select title,release_year from film where release_year=2006;
+  
+BEGIN
+	OPEN cur_films;
+	LOOP
+		FETCH cur_films INTO rec_film;
+		EXIT WHEN NOT FOUND;
+			--Do what you want to do for each records
+			RAISE NOTICE '% on Year % ', rec_film.title, rec_film.release_year;
+	END LOOP;
+	CLOSE cur_films;
+EXCEPTION
+WHEN OTHERS THEN
+	RAISE NOTICE 'I errored out!!!';
+END;
+$$ LANGUAGE plpgsql;
+
+
+call PROC_TEST1();
