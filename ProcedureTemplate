@@ -1,10 +1,10 @@
-CREATE OR REPLACE PROCEDURE <procedure_name> ( )
+CREATE OR REPLACE PROCEDURE <procedure_name> (param1,param2..)
 AS
 $$
 BEGIN
 	--Put Your Body Here
 END;
-$$ LANGUAGE plgsql;
+$$ LANGUAGE plpgsql;
 
 
 call procedure_name
