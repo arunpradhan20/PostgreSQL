@@ -1,0 +1,10 @@
+CREATE OR REPLACE PROCEDURE <procedure_name> ( )
+AS
+$$
+BEGIN
+	--Put Your Body Here
+END;
+$$ LANGUAGE plgsql;
+
+
+call procedure_name
