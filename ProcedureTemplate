@@ -1,10 +1,31 @@
-CREATE OR REPLACE PROCEDURE <procedure_name> (param1,param2..)
+CREATE OR REPLACE PROCEDURE <procedure_name> (param1[in|out|inout],param2[in|out|inout]... )
 AS
 $$
+DECLARE
+	my_rec 			RECORD;  					
+	row_variable 	TABLE_NAME%ROWTYPE;   	--Another way of declaring variable. Not used here though
+	
+	cur_name CURSOR FOR SELECT * FROM [tablename];
 BEGIN
-	--Put Your Body Here
+
+	OPEN cur_name;
+	LOOP
+		FETCH cur_name INTO my_rec;
+		EXIT WHEN NOT FOUND;
+			--Do what you want to do for each records
+			RAISE NOTICE '% on Year % ', my_rec.column1, my_rec.column3;
+	END LOOP;
+	CLOSE cur_name;
+	
+EXCEPTION
+WHEN condition1 [or condition...] THEN
+       handle_exception;
+WHEN condition1 [or condition...] THEN
+       handle_exception;]
+WHEN others THEN
+       handle_other_exceptions;
 END;
 $$ LANGUAGE plpgsql;
 
 
-call procedure_name
+call <procedure_name>();
