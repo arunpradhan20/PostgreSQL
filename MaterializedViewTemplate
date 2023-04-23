@@ -1,0 +1,62 @@
+--Materialized views that allow you to store the result of a query physically and update the data periodically
+
+---------------------------------------------
+Materialized views Creation Template
+---------------------------------------------
+CREATE MATERIALIZED VIEW mview_name
+AS
+query
+WITH [NO] DATA;
+
+--WITH DATA	=> Will Load the data at the time of Creation
+--WITH [NO] DATA => Will Not load data when its created. Flagged as unreadable until data loaded
+
+---------------------------------------------
+--Refreshing data for materialized views
+---------------------------------------------
+REFRESH MATERIALIZED VIEW view_name;
+
+REFRESH MATERIALIZED VIEW CONCURRENTLY view_name;
+	With CONCURRENTLY option, PostgreSQL creates a temporary updated version
+	of the materialized view, compares two versions, and performs INSERT and
+	UPDATE only the differences.
+	To refresh it with CONCURRENTLY option,	you need to create a UNIQUE index for the view
+	
+---------------------------------------------
+Example
+---------------------------------------------
+
+CREATE MATERIALIZED VIEW rental_by_category
+AS
+ SELECT c.name AS category,
+    sum(p.amount) AS total_sales
+   FROM (((((payment p
+     JOIN rental r ON ((p.rental_id = r.rental_id)))
+     JOIN inventory i ON ((r.inventory_id = i.inventory_id)))
+     JOIN film f ON ((i.film_id = f.film_id)))
+     JOIN film_category fc ON ((f.film_id = fc.film_id)))
+     JOIN category c ON ((fc.category_id = c.category_id)))
+  GROUP BY c.name
+  ORDER BY sum(p.amount) DESC
+WITH NO DATA;
+
+--Select after creating MVIEW "WITH NO DATA;"
+--This will Error since we do not have data yet
+SELECT * FROM rental_by_category; 
+
+--Refreshing MVIEW
+--MVIEW will be locked while it is being Refreshed
+REFRESH MATERIALIZED VIEW rental_by_category;
+
+SELECT * FROM rental_by_category; 
+
+--Refreshing MVIEW CONCURRENTLY
+--This will avoid locking table
+--If not have index we cannot REFRESH CONCURRENTLY
+REFRESH MATERIALIZED VIEW CONCURRENTLY rental_by_category; 
+
+--Creating UNIQUE INDEX so we can REFRESH MVIEW CONCURRENTLY
+CREATE UNIQUE INDEX rental_category ON rental_by_category(category);
+
+--REFRESH MVIEW CONCURRENTLY
+REFRESH MATERIALIZED VIEW CONCURRENTLY rental_by_category;
