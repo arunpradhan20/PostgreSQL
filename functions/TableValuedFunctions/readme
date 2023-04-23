@@ -1,0 +1,5 @@
+Execute the scripts on this order:
+  importdatabase.txt        --To Create the Database, Tables and Insert Records
+  enum-search_type.sql      --Create enum type to restrict values
+  fn_get_actors.sql         --Creating the Functions
+  fn_get_actors_movies.sql  --Another Functions
