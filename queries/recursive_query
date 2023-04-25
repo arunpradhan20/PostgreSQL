@@ -1,0 +1,84 @@
+WHAT IS A RECURSIVE SQL COMMON TABLE EXPRESSION (CTE)?
+A recursive SQL common table expression (CTE) is a query that continuously references a previous result until it returns an empty result. 
+It’s best used as a convenient way to extract information from hierarchical data.
+It’s achieved using a CTE, which in SQL is known as a “with” statement. This allows you to name the result and reference it within other queries later. 
+
+A recursive query is one that is defined by a Union All with an initialization fullselect that seeds the recursion. The iterative fullselect contains a direct reference to itself in the FROM clause.
+
+Meaning, Same query will be executed until then termination condition is met
+
+----------------------
+Syntax
+----------------------
+
+WITH [RECURSIVE] CTE_name AS
+	(
+	SELECT query (Non Recursive query or the Base query)
+		UNION [ALL]
+	SELECT query (Recursive query using CTE_name [with a termination condition])
+	)
+SELECT * FROM CTE_name;
+
+----------------------
+--Queries:
+----------------------
+
+------------------------------------------------------------------------
+--Q1: Display number from 1 to 10 without using any in built functions
+------------------------------------------------------------------------
+
+
+WITH RECURSIVE numbers AS
+	(SELECT 1 AS n
+	 UNION 
+	 SELECT n +1 FROM numbers WHERE n < 10
+	)
+SELECT * FROM numbers;
+
+
+-----------------------------------------------------------------
+--Q2: Find the hierarchy of employees under a given manager
+-----------------------------------------------------------------
+
+Data Creation
+----------------
+
+CREATE TABLE EMP_DETAILS 
+(id integer,
+ name varchar(100),
+ manager_id integer,
+ salary integer,
+ designation varchar(100)
+);
+
+INSERT INTO EMP_DETAILS values (1,'Shripadh',null, 10000,'CEO');
+INSERT INTO EMP_DETAILS values (2,'Satya',5, 1400,'Software Engineer');
+INSERT INTO EMP_DETAILS values (3,'Jia',5, 500,'Data Analyst');
+INSERT INTO EMP_DETAILS values (4,'David',5, 1800,'Data Scientist');
+INSERT INTO EMP_DETAILS values (5,'Michael',7, 3000,'Manager');
+INSERT INTO EMP_DETAILS values (6,'Arvind',7, 2400,'Architect');
+INSERT INTO EMP_DETAILS values (7,'Asha',1, 4200,'TO');
+INSERT INTO EMP_DETAILS values (8,'Maryam',1, 3500,'Manager');
+INSERT INTO EMP_DETAILS values (9,'Reshma',8, 2000,'Business Analyst');
+INSERT INTO EMP_DETAILS values (10,'Anthony',8, 2500,'Java Developer');
+
+
+select * from EMP_DETAILS;
+
+Query 2:
+
+WITH RECURSIVE Hierachy_mgr AS
+	(
+		SELECT id,name,manager_id,designation, 1 as lvl
+		FROM emp_Details where id = 7
+		UNION ALL
+		SELECT a.id,a.name,a.manager_id,a.designation, lvl+1 as lvl
+		FROM Hierachy_mgr h, emp_Details a
+			WHERE h.id=a.manager_id
+	)
+SELECT * FROM Hierachy_mgr;
+
+-----------------------------------------------------------------
+--Q3: Find the hierarchy of managers for a given employee
+-----------------------------------------------------------------
+
